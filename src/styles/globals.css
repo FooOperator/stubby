@@ -2,8 +2,18 @@ html,
 body {
   padding: 0;
   margin: 0;
+  height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+:root {
+  --space-cadet: #34344a;
+  --raisin-black: #201c21;
+  --azure-x: #ebfff9;
+  --celadon-blue: #087ca7;
+  --dark-sky-blue: #7abed0;
+  --slate-grey: #6e7e85;
 }
 
 a {
