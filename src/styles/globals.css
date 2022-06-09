@@ -14,6 +14,9 @@ body {
   --celadon-blue: #087ca7;
   --dark-sky-blue: #7abed0;
   --slate-grey: #6e7e85;
+  --rich-black: #001014;
+  --red-pigment: #f13030;
+  --ubuntu-mono: "Ubuntu Mono", monospace;
 }
 
 a {
@@ -23,4 +26,5 @@ a {
 
 * {
   box-sizing: border-box;
+  font-family: var(--ubuntu-mono);
 }

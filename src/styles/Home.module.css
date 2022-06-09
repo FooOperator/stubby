@@ -6,11 +6,32 @@
   background-color: var(--slate-grey);
 }
 
+.header {
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  font-style: italic;
+  margin: auto;
+  color: var(--rich-black);
+  text-align: center;
+  margin: 0;
+}
+
+.header > h1 {
+  font-size: 3rem;
+  margin: 0.2rem auto;
+}
+
+.header > legend {
+  font-size: 1.2rem;
+  margin: 0.2rem auto;
+}
+
 .main-element {
   max-width: 40em;
   min-width: 40em;
-  max-height: 20em;
-  min-height: 20em;
+  max-height: 40em;
+  min-height: 40em;
 }
 
 .main-element,
@@ -26,37 +47,72 @@
 }
 
 .form {
-  margin-top: 3em;
+  margin-top: 3rem;
   background-color: var(--space-cadet);
 }
 
-.input-button-row {
+.fieldsets {
   display: flex;
-  padding: 0.5rem;
+  flex-direction: column;
+  padding: 1.2rem;
 }
 
-.input-link {
+.fieldset {
+  display: flex;
+  padding: 0.5rem;
+  border: none;
+  vertical-align: middle;
+}
+
+.field {
   font-size: 1.6rem;
-  flex-basis: 90%;
+  flex-basis: 80%;
   background-color: var(--raisin-black);
   border: none;
   color: var(--azure-x);
   text-indent: 0.5rem;
   padding: 0.1rem;
+  margin-left: auto;
+}
+
+.field:invalid {
+  border-color: var(--red-pigment);
+  color: var(--red-pigment);
+}
+
+.label {
+  color: var(--azure-x);
+  text-align: center;
+  flex-basis: 10%;
+  font-size: 1.3rem;
+  margin-right: 0.4rem;
+  white-space: nowrap;
+  margin: auto;
 }
 
 .submit-btn {
-  flex-basis: 30%;
-  background: none;
-  margin-left: 2rem;
-  font-weight: bold;
+  margin: auto;
+  margin-bottom: 0.5rem;
+  padding: 0.8rem;
   background-color: var(--dark-sky-blue);
+  color: var(--rich-black);
+  font-size: 1.3rem;
 }
 
-.submit-btn:hover {
+.submit-btn:enabled:hover {
   cursor: pointer;
   color: var(--azure-x);
   background-color: var(--celadon-blue);
+}
+
+.submit-btn:disabled {
+  cursor: not-allowed;
+  color: var(--rich-black);
+  opacity: 0.7;
+}
+
+.submit-btn:disabled:hover {
+  cursor: not-allowed;
 }
 
 .shortened-link {
@@ -65,7 +121,7 @@
   padding: 0.5rem;
   justify-content: center;
   margin: auto 3rem;
-  margin-top: 5rem;
+  margin-top: 2rem;
   align-items: center;
   vertical-align: middle;
 }
