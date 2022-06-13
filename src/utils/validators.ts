@@ -4,7 +4,7 @@ const slugInvalidCharacters = /(\s)/;
 
 declare type ConditionsObject = { [key: string]: [condition: boolean, message: string] };
 
-export const isUrlValid = (link: string): string[] => {
+export const verifyUrl = (link: string): string[] => {
     const errorPayload: string[] = [];
     const conditions: ConditionsObject = {
         validUrl: [/^(http|https):\/\/[^ "]+$/.test(link), "Link is not valid"],
@@ -20,7 +20,7 @@ export const isUrlValid = (link: string): string[] => {
     return errorPayload;
 }
 
-export const isSlugValid = (slug: string): string[] => {
+export const verifySlug = (slug: string): string[] => {
     const errorPayload: string[] = [];
 
     const conditions: ConditionsObject = {

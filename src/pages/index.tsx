@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { FaRegClipboard } from 'react-icons/fa';
 import { AiFillGithub, AiFillLinkedin } from 'react-icons/ai';
 import styles from '../styles/Home.module.css';
-import { isUrlValid as verifyUrl, isSlugValid as verifySlug } from '../utils/validators';
+import { verifyUrl, verifySlug } from '../utils/validators';
 import { trpc } from '../utils/trpc';
 import debounce from 'lodash/debounce';
 import absoluteUrl from 'next-absolute-url';
@@ -62,9 +62,15 @@ const Home: NextPage = () => {
     });
   }
 
-  const handleCopyToClipboard = () => {
-    alert(`${inputData.url} copied!`);
-    navigator.clipboard.writeText(shortLink);
+  const handleCopyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(`${origin}/${inputData.slug}`);
+      alert(`${shortLink} copied!`);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to copy to clipboard');
+    }
+
   }
 
   const handleDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
