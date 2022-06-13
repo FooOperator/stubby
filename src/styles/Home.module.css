@@ -54,11 +54,13 @@
 .fieldsets {
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
   padding: 1.2rem;
 }
 
 .fieldset {
   display: flex;
+  flex-wrap: wrap;
   padding: 0.5rem;
   border: none;
   vertical-align: middle;
@@ -76,8 +78,8 @@
 }
 
 .field:invalid {
-  border-color: var(--red-pigment);
-  color: var(--red-pigment);
+  outline-color: var(--fuzzy-wuzzy);
+  border-color: var(--fuzzy-wuzzy);
 }
 
 .label {
@@ -103,6 +105,33 @@
   cursor: pointer;
   color: var(--azure-x);
   background-color: var(--celadon-blue);
+}
+
+.input-message {
+  flex-basis: 80%;
+  margin-top: 0.4rem;
+  margin-left: auto;
+  padding: 0.6rem;
+  color: var(--raisin-black);
+  font-size: 1.2rem;
+}
+
+.input-message > li {
+  list-style: circle;
+  padding: 0;
+  margin-left: 1rem;
+}
+
+.input-is-valid {
+  background-color: var(--green);
+}
+
+.input-is-invalid {
+  background-color: var(--fuzzy-wuzzy);
+}
+
+.hide {
+  display: none;
 }
 
 .submit-btn:disabled {

@@ -12,9 +12,13 @@ export async function middleware(req: NextRequest, event: NextFetchEvent) {
     }
 
     const slug = pathname.split('/').pop();
-    // console.log('slug', slug);
 
     const dataFetch = await fetch(`${origin}/api/get-url/${slug}`);
+
+    if (dataFetch.status === 404) {
+        return NextResponse.redirect(origin);
+    }
+
     const data = await dataFetch.json();
 
     if (data?.url) {

@@ -1,38 +1,78 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { FaRegClipboard } from 'react-icons/fa';
-import { MAX_SLUG_LENGTH } from '../db/constants';
 import styles from '../styles/Home.module.css';
-import { isLinkValid, isSlugValid } from '../utils/validators';
+import { isUrlValid as verifyUrl, isSlugValid as verifySlug } from '../utils/validators';
+import { trpc } from '../utils/trpc';
+import debounce from 'lodash/debounce';
+import absoluteUrl from 'next-absolute-url';
+
+const { origin } = absoluteUrl();
 
 const Home: NextPage = () => {
-  const [canSubmit, setCanSubmit] = useState(false);
-  const [link, setLink] = useState<string>('');
-  const [slug, setSlug] = useState<string>('');
-  const [shortLink, setShortLink] = useState<string>('');
+  const [canSubmit, setCanSubmit] = useState(true);
+  const [shortLink, setShortLink] = useState('');
+  const [inputData, setInputData] = useState<{ url: string; slug: string }>({
+    url: '',
+    slug: '',
+  });
+  const [conditions, setConditions] = useState<{ url: string[], slug: string[] }>({
+    url: [],
+    slug: [],
+  });
+  const slugHasQuery = trpc.useQuery(['checkSlug', { slug: inputData.slug }], {
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+  const createSlugMutation = trpc.useMutation('createSlug');
+
+  useEffect(() => {
+    let linkIsValid = true;
+    let slugIsValid = true;
+
+    setConditions({
+      slug: [
+        ...verifySlug(inputData.slug),
+        ...slugHasQuery.data?.used ? ['Slug is already used'] : [],
+      ],
+      url: verifyUrl(inputData.url),
+    });
+
+    if (conditions.url.length > 0) linkIsValid = false;
+    if (conditions.slug.length > 0) slugIsValid = false;
+
+    setCanSubmit(linkIsValid && slugIsValid);
+  }, [inputData, canSubmit, conditions.slug.length, conditions.url.length, slugHasQuery.data]);
+
+  useEffect(() => {
+    if (createSlugMutation.status === 'success') {
+      setShortLink(`${origin}/${inputData.slug}`);
+    }
+  }, [createSlugMutation, shortLink, inputData.slug])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    createSlugMutation.mutate({
+      ...inputData
+    });
     console.log('submit');
   }
 
-  useEffect(() => {
-    setCanSubmit(isLinkValid(link) && isSlugValid(slug));
-  }, [link, slug]);
-
   const handleCopyToClipboard = () => {
-    alert(`${link} copied!`);
+    alert(`${inputData.url} copied!`);
     navigator.clipboard.writeText(shortLink);
   }
 
-  const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLink(e.target.value.trim());
-  }
-
-  const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSlug(e.target.value.trim());
+  const handleDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    console.log('name: ', name);
+    console.log('value: ', value);
+    setInputData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
   }
 
   return (
@@ -58,24 +98,65 @@ const Home: NextPage = () => {
               <input
                 id="f122e2"
                 type="text"
-                value={link}
+                name={'url'}
+                value={inputData.url}
                 className={styles['field']}
-                onChange={handleLinkChange}
+                onChange={handleDataChange}
                 placeholder="Enter your link"
+                required
               />
+              <ul
+                className={
+                  `${styles['input-message']} 
+                  ${(
+                    conditions.url.length < 1 ?
+                      styles['hide'] :
+                      styles["input-is-invalid"]
+                  )}`}
+              >
+                {
+                  conditions.url.map((message, index) =>
+                    <li key={index}>{message}</li>
+                  )
+                }
+              </ul>
             </fieldset>
             <fieldset className={styles['fieldset']}>
-              <label className={styles['label']} htmlFor="d122e2">
+              <label
+                className={`${styles['label']}`}
+                htmlFor="d122e2">
                 Slug
               </label>
               <input
                 id='d122e2'
                 type="text"
-                value={slug}
+                name={'slug'}
+                value={inputData.slug}
                 className={styles['field']}
-                onChange={handleSlugChange}
-                placeholder="The name of your link"
+                onChange={(e) => {
+                  handleDataChange(e);
+                  debounce(slugHasQuery.refetch, 100);
+                }}
+                minLength={1}
+                pattern={"^[-a-zA-Z0-9]+$"}
+                placeholder="The shorthand name for your link"
+                required
               />
+              <ul
+                className={
+                  `${styles['input-message']} 
+                  ${(
+                    conditions.slug.length < 1 ?
+                      styles['hide'] :
+                      styles["input-is-invalid"]
+                  )}`}
+              >
+                {
+                  conditions.slug.map((message, index) =>
+                    <li key={index}>{message}</li>
+                  )
+                }
+              </ul>
             </fieldset>
           </div>
           <button
