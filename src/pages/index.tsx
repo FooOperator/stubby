@@ -49,15 +49,15 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (createSlugMutation.status === 'success') {
       setShortLink(`${origin}/${inputData.slug}`);
+      slugHasQuery.refetch();
     }
-  }, [createSlugMutation, shortLink, inputData.slug])
+  }, [createSlugMutation, shortLink, inputData.slug, slugHasQuery]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     createSlugMutation.mutate({
       ...inputData
     });
-    console.log('submit');
   }
 
   const handleCopyToClipboard = () => {
