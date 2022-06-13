@@ -134,6 +134,31 @@
   display: none;
 }
 
+.contacts {
+  display: flex;
+  justify-content: center;
+}
+
+.contact-icon {
+  font-size: 2rem;
+  margin-right: 0.5rem;
+}
+
+.paragraphs {
+  text-align: center;
+}
+
+.footer-content {
+  flex: 1;
+  margin: auto;
+  margin-bottom: 1.2rem;
+}
+
+.contact-icon:hover {
+  cursor: pointer;
+  color: var(--azure-x);
+}
+
 .submit-btn:disabled {
   cursor: not-allowed;
   color: var(--rich-black);

@@ -2,13 +2,14 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { FaRegClipboard } from 'react-icons/fa';
+import { AiFillGithub, AiFillLinkedin } from 'react-icons/ai';
 import styles from '../styles/Home.module.css';
 import { isUrlValid as verifyUrl, isSlugValid as verifySlug } from '../utils/validators';
 import { trpc } from '../utils/trpc';
 import debounce from 'lodash/debounce';
 import absoluteUrl from 'next-absolute-url';
+import { redirect } from 'next/dist/server/api-utils';
 
-const { origin } = absoluteUrl();
 
 const Home: NextPage = () => {
   const [canSubmit, setCanSubmit] = useState(true);
@@ -50,6 +51,7 @@ const Home: NextPage = () => {
     if (createSlugMutation.status === 'success') {
       setShortLink(`${origin}/${inputData.slug}`);
       slugHasQuery.refetch();
+      createSlugMutation.reset();
     }
   }, [createSlugMutation, shortLink, inputData.slug, slugHasQuery]);
 
@@ -109,7 +111,7 @@ const Home: NextPage = () => {
                 className={
                   `${styles['input-message']} 
                   ${(
-                    conditions.url.length < 1 ?
+                    inputData.url.length < 1 || conditions.url.length < 1 ?
                       styles['hide'] :
                       styles["input-is-invalid"]
                   )}`}
@@ -146,15 +148,19 @@ const Home: NextPage = () => {
                 className={
                   `${styles['input-message']} 
                   ${(
-                    conditions.slug.length < 1 ?
+                    inputData.slug.length < 1 ?
                       styles['hide'] :
-                      styles["input-is-invalid"]
+                      !slugHasQuery.data?.used && conditions.slug.length < 1 ?
+                        styles["input-is-valid"] :
+                        styles['input-is-invalid']
                   )}`}
               >
                 {
-                  conditions.slug.map((message, index) =>
-                    <li key={index}>{message}</li>
-                  )
+                  !slugHasQuery.data?.used && conditions.slug.length < 1 ?
+                    <li>Slug is available</li> :
+                    conditions.slug.map((message, index) =>
+                      <li key={index}>{message}</li>
+                    )
                 }
               </ul>
             </fieldset>
@@ -176,6 +182,22 @@ const Home: NextPage = () => {
           </div>
         }
       </div>
+      <footer>
+        <div className={styles['footer-content']}>
+          <div className={styles['paragraphs']}>
+            <p>Created by Lucas Guerra Cardoso</p>
+            <p>Heavily inspired by Theo from Ping Labs</p>
+          </div>
+          <div className={styles['contacts']}>
+            <a href="https://github.com/FooOperator">
+              <AiFillGithub className={styles['contact-icon']} />
+            </a>
+            <a href="https://www.linkedin.com/in/lucas-guerra-cardoso-1b273a182/">
+              <AiFillLinkedin className={styles['contact-icon']} />
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
