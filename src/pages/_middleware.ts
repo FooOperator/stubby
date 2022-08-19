@@ -1,5 +1,4 @@
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
-import { nanoid } from 'nanoid';
 
 export async function middleware(req: NextRequest, event: NextFetchEvent) {
     const { pathname, origin } = req.nextUrl;

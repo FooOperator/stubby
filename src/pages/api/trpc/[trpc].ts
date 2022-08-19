@@ -3,11 +3,6 @@ import * as trpcNext from '@trpc/server/adapters/next';
 import { z } from 'zod';
 import { prismaClient } from '../../../db/prismaClient';
 
-type ShortLink = {
-    slug: string;
-    url: string;
-}
-
 const appRouter = trpc.router().
     query('checkSlug', {
         input: z.object({
@@ -27,14 +22,14 @@ const appRouter = trpc.router().
     .mutation('createSlug', {
         input: z.object({
             slug: z.string(),
-            url: z.string()
+            link: z.string()
         }),
         async resolve({ input }) {
             try {
                 await prismaClient.shortLink.create({
                     data: {
                         slug: input.slug,
-                        url: input.url
+                        url: input.link
                     }
                 });
             } catch (error) {

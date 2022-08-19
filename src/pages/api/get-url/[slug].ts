@@ -23,7 +23,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 equals: slug as string
             }
         }
-    })
+    });
 
     if (!data) {
         res.statusCode = 404;
